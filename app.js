@@ -38,10 +38,16 @@
   const header = document.getElementById('header');
   let lastScrollY = 0;
 
+  // On inner pages (with page-hero, no full-bleed hero), always show scrolled header
+  var hasFullHero = document.querySelector('.hero');
+
   function handleScroll() {
     const scrollY = window.scrollY;
 
-    if (scrollY > 80) {
+    if (!hasFullHero) {
+      // Inner pages: always scrolled style
+      header.classList.add('header--scrolled');
+    } else if (scrollY > 80) {
       header.classList.add('header--scrolled');
     } else {
       header.classList.remove('header--scrolled');
@@ -128,31 +134,29 @@
   }
 
   // ============================================================
-  // ACTIVE NAV LINK HIGHLIGHTING
+  // PAGE-BASED ACTIVE NAV HIGHLIGHTING
   // ============================================================
-  const navLinks = document.querySelectorAll('.nav__link');
-  const sections = document.querySelectorAll('section[id]');
+  var pathSegment = window.location.pathname.split('/').pop() || '';
+  // Normalize: strip .html extension for comparison
+  var currentPage = pathSegment.replace(/\.html$/, '') || 'index';
+  if (currentPage === '') currentPage = 'index';
 
-  function updateActiveNav() {
-    const scrollY = window.scrollY + 120;
+  var navLinks = document.querySelectorAll('.nav__link');
+  var mobileLinks = document.querySelectorAll('.mobile-nav__link');
 
-    sections.forEach(function (section) {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      const sectionId = section.getAttribute('id');
-
-      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-        navLinks.forEach(function (link) {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === '#' + sectionId) {
-            link.style.color = '';
-          }
-        });
+  function setActiveLinks(links) {
+    links.forEach(function (link) {
+      var href = link.getAttribute('href');
+      // Normalize href: strip .html extension
+      var hrefPage = href.replace(/\.html$/, '') || 'index';
+      if (hrefPage === currentPage) {
+        link.classList.add('active');
       }
     });
   }
 
-  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  setActiveLinks(navLinks);
+  setActiveLinks(mobileLinks);
 
   // ============================================================
   // CONTACT FORM (Decorative)

@@ -2102,3 +2102,71 @@ a:hover { color: var(--color-secondary-hover); }
     min-width: 80px;
   }
 }
+
+/* ============================================================
+   PAGE HERO (Inner Page Banners)
+   ============================================================ */
+.page-hero {
+  background: #1B2A4A;
+  padding: clamp(var(--space-16), 8vw, var(--space-24)) 0 clamp(var(--space-10), 5vw, var(--space-16));
+  margin-top: 72px;
+  text-align: center;
+}
+
+[data-theme="dark"] .page-hero {
+  background: #0F1829;
+}
+
+.page-hero__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: var(--space-3);
+}
+
+.page-hero__breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.page-hero__breadcrumb a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color var(--transition-interactive);
+}
+
+.page-hero__breadcrumb a:hover {
+  color: #fff;
+}
+
+.page-hero__breadcrumb-sep {
+  font-size: var(--text-base);
+  opacity: 0.5;
+}
+
+/* ============================================================
+   ACTIVE NAV LINK (Page-based)
+   ============================================================ */
+.nav__link.active {
+  color: var(--color-accent);
+}
+
+.header--scrolled .nav__link.active {
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.mobile-nav__link.active {
+  color: var(--color-accent);
+}
+
+/* Footer credit styling */
+.footer-credit {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.5);
+}
