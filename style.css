@@ -689,16 +689,33 @@ a:hover { color: var(--color-secondary-hover); }
   margin-bottom: var(--space-12);
 }
 
-/* Hero Stats */
-.hero__stats {
+/* Hero Stats — now in standalone stats-bar below hero */
+.stats-bar {
+  background: var(--color-primary);
+  padding: var(--space-6) 0;
+  position: relative;
+  z-index: 3;
+}
+
+.stats-bar__inner {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--space-8);
-  padding-top: var(--space-8);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  align-items: center;
+  gap: var(--space-6) var(--space-10);
 }
 
+.stats-bar__stat {
+  text-align: center;
+}
+
+.stats-bar__divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* shared stat text styles (used by stats-bar) */
 .hero__stat {
   text-align: center;
 }
@@ -724,8 +741,8 @@ a:hover { color: var(--color-secondary-hover); }
   background: var(--color-surface);
   position: relative;
   z-index: 3;
-  margin-top: -80px;
-  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  margin-top: 0;
+  border-radius: 0;
   padding-top: var(--space-16);
 }
 
@@ -2094,11 +2111,15 @@ a:hover { color: var(--color-secondary-hover); }
     font-size: clamp(1.75rem, 1rem + 3.5vw, 2.5rem);
   }
 
-  .hero__stats {
-    gap: var(--space-6);
+  .stats-bar__divider {
+    display: none;
   }
 
-  .hero__stat {
+  .stats-bar__inner {
+    gap: var(--space-4) var(--space-8);
+  }
+
+  .stats-bar__stat {
     min-width: 80px;
   }
 }
