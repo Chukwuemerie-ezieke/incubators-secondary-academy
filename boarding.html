@@ -237,6 +237,22 @@
       </div>
     </section>
 
+    <!-- ============================================================
+         BOARDING UPDATES (CMS)
+         ============================================================ -->
+    <section class="section-padding" id="boarding-updates" style="background: var(--color-surface-2);">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label">Boarding Updates</p>
+          <h2 class="section-title mx-auto">Latest from the Hostel</h2>
+          <p class="section-subtitle mx-auto">News, announcements, and updates from our boarding community.</p>
+        </div>
+        <div id="boardingUpdatesContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading updates&hellip;</p></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -320,5 +336,30 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.boardingUpdates);
+        const container = document.getElementById('boardingUpdatesContainer');
+        if (!data.length) { showEmpty('boardingUpdatesContainer', 'No boarding updates at the moment.'); return; }
+        const sorted = data.reverse(); // newest first
+        let html = '<div class="boarding-updates-grid">';
+        sorted.forEach(item => {
+          html += '<div class="cms-card">';
+          html += '<div class="cms-card__header">';
+          html += '<span class="cms-card__date">' + escHtml(item.Date || '') + '</span>';
+          if (item.Category) html += '<span class="cms-badge cms-badge--general">' + escHtml(item.Category) + '</span>';
+          html += '</div>';
+          html += '<h3 class="cms-card__title">' + escHtml(item.Title || '') + '</h3>';
+          html += '<p class="cms-card__desc">' + escHtml(item.Message || '') + '</p>';
+          html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Boarding updates load error:', e); showEmpty('boardingUpdatesContainer', 'Could not load boarding updates.'); }
+    })();
+  </script>
 </body>
 </html>

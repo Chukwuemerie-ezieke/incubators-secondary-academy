@@ -131,50 +131,20 @@
     </section>
 
     <!-- ============================================================
-         GALLERY SECTION
+         GALLERY SECTION (CMS)
          ============================================================ -->
     <section class="gallery-section section-padding" id="gallery">
       <div class="container">
         <div class="text-center" style="margin-bottom: var(--space-10);">
-          <p class="section-label fade-in">Gallery</p>
-          <h2 class="section-title mx-auto fade-in">Life at Incubators</h2>
-          <p class="section-subtitle mx-auto fade-in">A glimpse into the vibrant experiences of our students.</p>
+          <p class="section-label">Gallery</p>
+          <h2 class="section-title mx-auto">Life at Incubators</h2>
+          <p class="section-subtitle mx-auto">A glimpse into the vibrant experiences of our students.</p>
         </div>
-        <div class="gallery-grid">
-          <div class="gallery-card fade-in stagger-1">
-            <div class="gallery-card__icon">⚽</div>
-            <span class="gallery-card__caption">Blue House Football Team</span>
-          </div>
-          <div class="gallery-card fade-in stagger-2">
-            <div class="gallery-card__icon">🍳</div>
-            <span class="gallery-card__caption">Food &amp; Nutrition Practicals</span>
-          </div>
-          <div class="gallery-card fade-in stagger-3">
-            <div class="gallery-card__icon">⚽</div>
-            <span class="gallery-card__caption">Pink House Football Team</span>
-          </div>
-          <div class="gallery-card fade-in stagger-4">
-            <div class="gallery-card__icon">🔬</div>
-            <span class="gallery-card__caption">Physics Practical Session</span>
-          </div>
-          <div class="gallery-card fade-in stagger-5">
-            <div class="gallery-card__icon">💻</div>
-            <span class="gallery-card__caption">ICT Computer Lab</span>
-          </div>
-          <div class="gallery-card fade-in stagger-6">
-            <div class="gallery-card__icon">🎨</div>
-            <span class="gallery-card__caption">Visual Art Studio</span>
-          </div>
-          <div class="gallery-card fade-in stagger-7">
-            <div class="gallery-card__icon">🏓</div>
-            <span class="gallery-card__caption">Table Tennis</span>
-          </div>
-          <div class="gallery-card fade-in stagger-8">
-            <div class="gallery-card__icon">🎭</div>
-            <span class="gallery-card__caption">Student Activities</span>
-          </div>
+        <div id="galleryFilter" class="gallery-filter" style="display:none;"></div>
+        <div id="galleryContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading photos&hellip;</p></div>
         </div>
-        <p class="gallery-note fade-in">
+        <p class="gallery-note" style="margin-top: var(--space-8);">
           Visit our <a href="https://sites.google.com/view/incubators-secondary-academy" target="_blank" rel="noopener noreferrer">Google Sites gallery</a> for more photos of school life.
         </p>
       </div>
@@ -263,5 +233,54 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.gallery);
+        const container = document.getElementById('galleryContainer');
+        const filterRow = document.getElementById('galleryFilter');
+        if (!data.length) { showEmpty('galleryContainer', 'No photos yet. Check back soon!'); return; }
+
+        // Extract unique categories
+        const cats = ['All', ...new Set(data.map(p => p.Category || 'Uncategorized').filter(Boolean))];
+        filterRow.style.display = 'flex';
+        filterRow.innerHTML = cats.map(c =>
+          '<button class="gallery-filter__btn' + (c === 'All' ? ' gallery-filter__btn--active' : '') + '" data-cat="' + escHtml(c) + '">' + escHtml(c) + '</button>'
+        ).join('');
+
+        let currentCat = 'All';
+        function renderGallery() {
+          const filtered = currentCat === 'All' ? data : data.filter(p => (p.Category || 'Uncategorized') === currentCat);
+          if (!filtered.length) { container.innerHTML = '<p class="cms-empty">No photos in this category.</p>'; return; }
+          let html = '<div class="gallery-grid--cms">';
+          filtered.forEach(photo => {
+            const imgUrl = driveToDirectUrl(photo.Photo_URL || '');
+            if (!imgUrl) return;
+            html += '<div class="gallery-photo-card">';
+            html += '<img src="' + escHtml(imgUrl) + '" alt="' + escHtml(photo.Caption || 'School photo') + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'">';
+            html += '<div class="gallery-photo-card__info">';
+            html += '<div class="gallery-photo-card__caption">' + escHtml(photo.Caption || '') + '</div>';
+            html += '<div class="gallery-photo-card__meta">';
+            if (photo.Category) html += '<span class="cms-badge cms-badge--event">' + escHtml(photo.Category) + '</span>';
+            if (photo.Date_Taken) html += '<span>' + escHtml(photo.Date_Taken) + '</span>';
+            html += '</div></div></div>';
+          });
+          html += '</div>';
+          container.innerHTML = html;
+        }
+        renderGallery();
+
+        filterRow.addEventListener('click', function(e) {
+          if (!e.target.classList.contains('gallery-filter__btn')) return;
+          currentCat = e.target.dataset.cat;
+          filterRow.querySelectorAll('.gallery-filter__btn').forEach(b => b.classList.remove('gallery-filter__btn--active'));
+          e.target.classList.add('gallery-filter__btn--active');
+          renderGallery();
+        });
+      } catch(e) { console.warn('Gallery load error:', e); showEmpty('galleryContainer', 'Could not load photos. Please try again later.'); }
+    })();
+  </script>
 </body>
 </html>

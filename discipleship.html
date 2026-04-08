@@ -200,6 +200,22 @@
 
 
     <!-- ============================================================
+         CHAPEL SCHEDULE (CMS)
+         ============================================================ -->
+    <section class="section-padding" id="chapel-schedule" style="background: var(--color-surface-2);">
+      <div class="container">
+        <div class="section-header text-center">
+          <p class="section-label">Chapel Programme</p>
+          <h2 class="section-title">Weekly Chapel Schedule</h2>
+          <p class="section-subtitle">Our weekly chapel services and spiritual formation programme.</p>
+        </div>
+        <div id="chapelContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading schedule&hellip;</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
          A WORD TO MY STUDENTS
          ============================================================ -->
     <section class="word-section section-padding" id="word-to-students">
@@ -305,6 +321,32 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    // ─── Chapel Schedule ──────────────────────────────────
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.chapelSchedule);
+        const container = document.getElementById('chapelContainer');
+        if (!data.length) { showEmpty('chapelContainer', 'Chapel schedule will be posted soon.'); return; }
+        let html = '<div class="chapel-table-wrap"><table class="chapel-table">';
+        html += '<thead><tr><th>Day</th><th>Time</th><th>Theme</th><th>Facilitator</th><th>Notes</th></tr></thead>';
+        html += '<tbody>';
+        data.forEach(row => {
+          html += '<tr>';
+          html += '<td>' + escHtml(row.Day || '') + '</td>';
+          html += '<td>' + escHtml(row.Time || '') + '</td>';
+          html += '<td class="chapel-theme">' + escHtml(row.Theme || '') + '</td>';
+          html += '<td>' + escHtml(row.Facilitator || '') + '</td>';
+          html += '<td>' + escHtml(row.Notes || '') + '</td>';
+          html += '</tr>';
+        });
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Chapel schedule load error:', e); showEmpty('chapelContainer', 'Could not load chapel schedule.'); }
+    })();
+  </script>
 
   <!-- ====================================================
        A WORD TO MY STUDENTS — Google Sheets CMS

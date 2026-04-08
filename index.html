@@ -200,6 +200,22 @@
       </div>
     </section>
 
+    <!-- ============================================================
+         TESTIMONIALS SECTION (CMS)
+         ============================================================ -->
+    <section class="section-padding" id="testimonials" style="background: var(--color-surface-2);">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label">Testimonials</p>
+          <h2 class="section-title mx-auto">What Parents &amp; Students Say</h2>
+          <p class="section-subtitle mx-auto">Hear from our community about the INCUSA experience.</p>
+        </div>
+        <div id="testimonialsContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading testimonials&hellip;</p></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -283,5 +299,37 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.testimonials);
+        const container = document.getElementById('testimonialsContainer');
+        if (!data.length) { showEmpty('testimonialsContainer', 'Testimonials coming soon.'); return; }
+        let html = '<div class="testimonials-grid">';
+        data.forEach(t => {
+          const photoUrl = driveToDirectUrl(t.Photo_URL || '');
+          const initials = getInitials(t.Name || '');
+          html += '<div class="testimonial-card">';
+          html += '<div class="testimonial-card__quote-mark">&ldquo;</div>';
+          html += '<p class="testimonial-card__text">' + escHtml(t.Quote || '') + '</p>';
+          html += '<div class="testimonial-card__author">';
+          html += '<div class="testimonial-card__avatar">';
+          if (photoUrl) {
+            html += '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(t.Name || '') + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + escHtml(initials) + '\'">';
+          } else {
+            html += escHtml(initials);
+          }
+          html += '</div>';
+          html += '<div><div class="testimonial-card__name">' + escHtml(t.Name || '') + '</div>';
+          if (t.Role) html += '<div class="testimonial-card__role">' + escHtml(t.Role) + '</div>';
+          html += '</div></div></div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Testimonials load error:', e); showEmpty('testimonialsContainer', 'Could not load testimonials.'); }
+    })();
+  </script>
 </body>
 </html>

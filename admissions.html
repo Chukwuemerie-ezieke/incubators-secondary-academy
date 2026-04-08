@@ -214,6 +214,18 @@
             </div>
           </div>
         </div>
+
+        <!-- Dynamic Admission Details (CMS) -->
+        <div style="margin-top: var(--space-12);">
+          <div class="text-center" style="margin-bottom: var(--space-8);">
+            <p class="section-label">Detailed Information</p>
+            <h3 class="section-title">Admission Details</h3>
+            <p class="section-subtitle mx-auto">Requirements, fees, documents, and more — all in one place.</p>
+          </div>
+          <div id="admissionsContainer">
+            <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading admission details&hellip;</p></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -300,5 +312,53 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.admissions);
+        const container = document.getElementById('admissionsContainer');
+        if (!data.length) { showEmpty('admissionsContainer', 'Admission details will be published soon.'); return; }
+
+        // Group by Category
+        const catOrder = ['Requirements','Fees','Documents','Steps'];
+        const groups = {};
+        data.forEach(row => {
+          const cat = row.Category || 'General';
+          if (!groups[cat]) groups[cat] = [];
+          groups[cat].push(row);
+        });
+        const sortedCats = Object.keys(groups).sort((a, b) => {
+          const ia = catOrder.indexOf(a), ib = catOrder.indexOf(b);
+          if (ia !== -1 && ib !== -1) return ia - ib;
+          if (ia !== -1) return -1;
+          if (ib !== -1) return 1;
+          return a.localeCompare(b);
+        });
+
+        let html = '<div class="admission-accordion">';
+        sortedCats.forEach((cat, idx) => {
+          const isOpen = idx === 0 ? ' is-open' : '';
+          html += '<div class="admission-accordion__group' + isOpen + '">';
+          html += '<button class="admission-accordion__header" onclick="this.parentElement.classList.toggle(\'is-open\')">';
+          html += escHtml(cat);
+          html += '<svg class="admission-accordion__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+          html += '</button>';
+          html += '<div class="admission-accordion__body"><div class="admission-accordion__content">';
+          groups[cat].forEach(row => {
+            html += '<div class="admission-accordion__row">';
+            html += '<div class="admission-accordion__item">' + escHtml(row.Item || '') + '</div>';
+            html += '<div class="admission-accordion__detail">' + escHtml(row.Details || '');
+            if (row.Note) html += '<div class="admission-accordion__note">' + escHtml(row.Note) + '</div>';
+            html += '</div></div>';
+          });
+          html += '</div></div></div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Admissions load error:', e); showEmpty('admissionsContainer', 'Could not load admission details.'); }
+    })();
+  </script>
 </body>
 </html>

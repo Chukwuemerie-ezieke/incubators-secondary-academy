@@ -131,52 +131,49 @@
     </section>
 
     <!-- ============================================================
-         EVENTS & NEWS SECTION
+         ANNOUNCEMENTS SECTION (CMS)
          ============================================================ -->
-    <section class="events-section section-padding" id="events">
+    <section class="events-section section-padding" id="announcements">
       <div class="container">
         <div class="text-center" style="margin-bottom: var(--space-10);">
-          <p class="section-label fade-in">Events &amp; News</p>
-          <h2 class="section-title mx-auto fade-in">What&rsquo;s Happening</h2>
-          <p class="section-subtitle mx-auto fade-in">Stay up to date with the latest news and events at Incubators Secondary Academy.</p>
+          <p class="section-label">Events &amp; News</p>
+          <h2 class="section-title mx-auto">Announcements</h2>
+          <p class="section-subtitle mx-auto">Stay up to date with the latest news and events at Incubators Secondary Academy.</p>
         </div>
+        <div id="announcementsContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading announcements&hellip;</p></div>
+        </div>
+      </div>
+    </section>
 
-        <div class="events-grid">
-          <div class="featured-event fade-in-left">
-            <div class="featured-event__badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              Featured Announcement
-            </div>
-            <h3>Admissions Now Open for 2026/2027</h3>
-            <p>We are accepting applications for the 2026/2027 academic session. Spaces are limited — secure your child&rsquo;s place at one of the finest boarding schools in Anambra State. Applications open for JSS1 through SS3.</p>
-            <a href="admissions.html" class="btn btn-primary btn-icon">
-              Apply Now
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-          </div>
+    <!-- ============================================================
+         ACADEMIC CALENDAR SECTION (CMS)
+         ============================================================ -->
+    <section class="section-padding" id="calendar" style="background: var(--color-surface-2);">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label">Academic Calendar</p>
+          <h2 class="section-title mx-auto">Important Dates</h2>
+          <p class="section-subtitle mx-auto">Key dates for the academic year including exams, holidays, and activities.</p>
+        </div>
+        <div id="calendarContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading calendar&hellip;</p></div>
+        </div>
+      </div>
+    </section>
 
-          <div class="events-list fade-in-right">
-            <div class="event-item">
-              <div class="event-item__date">March 2026</div>
-              <h4>Excellent WAEC Results 2025</h4>
-              <p>Our students achieved outstanding results in the 2025 WAEC examinations with a 95% pass rate.</p>
-            </div>
-            <div class="event-item">
-              <div class="event-item__date">April 2026</div>
-              <h4>Second Term Resumes</h4>
-              <p>Students return for the second term of the 2025/2026 academic session.</p>
-            </div>
-            <div class="event-item">
-              <div class="event-item__date">May 2026</div>
-              <h4>Inter-House Sports Competition</h4>
-              <p>Annual inter-house sports featuring athletics, football, and table tennis.</p>
-            </div>
-            <div class="event-item">
-              <div class="event-item__date">July 2026</div>
-              <h4>Prize-Giving Day &amp; Graduation</h4>
-              <p>Celebrating academic excellence and bidding farewell to graduating students.</p>
-            </div>
-          </div>
+    <!-- ============================================================
+         PARENTS NEWSLETTER SECTION (CMS)
+         ============================================================ -->
+    <section class="section-padding" id="newsletters">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label">Parents&rsquo; Corner</p>
+          <h2 class="section-title mx-auto">Newsletters</h2>
+          <p class="section-subtitle mx-auto">Termly newsletters keeping parents informed about school progress and activities.</p>
+        </div>
+        <div id="newslettersContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading newsletters&hellip;</p></div>
         </div>
       </div>
     </section>
@@ -264,5 +261,86 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    // ─── Announcements ────────────────────────────────────
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.announcements);
+        const container = document.getElementById('announcementsContainer');
+        if (!data.length) { showEmpty('announcementsContainer', 'No announcements at the moment. Check back soon.'); return; }
+        const sorted = data.reverse(); // newest first
+        const badgeClass = { 'Notice':'notice','Event':'event','Achievement':'achievement','General':'general' };
+        let html = '<div class="cms-cards-grid">';
+        sorted.forEach(item => {
+          const cat = item.Category || 'General';
+          const cls = badgeClass[cat] || 'general';
+          html += '<div class="cms-card">';
+          html += '<div class="cms-card__header"><span class="cms-card__date">' + escHtml(item.Date || '') + '</span>';
+          html += '<span class="cms-badge cms-badge--' + cls + '">' + escHtml(cat) + '</span></div>';
+          html += '<h3 class="cms-card__title">' + escHtml(item.Title || '') + '</h3>';
+          html += '<p class="cms-card__desc">' + escHtml(item.Description || '') + '</p>';
+          if (item.Link) html += '<a href="' + escHtml(item.Link) + '" class="btn btn-primary btn-icon" style="margin-top:var(--space-3);font-size:var(--text-sm);">Learn More <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>';
+          html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Announcements load error:', e); showEmpty('announcementsContainer', 'Could not load announcements. Please try again later.'); }
+    })();
+
+    // ─── Academic Calendar ─────────────────────────────────
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.calendar);
+        const container = document.getElementById('calendarContainer');
+        if (!data.length) { showEmpty('calendarContainer', 'Academic calendar will be published soon.'); return; }
+        const catClass = { 'Exam':'exam','Holiday':'holiday','Resumption':'resumption','Activity':'activity','Meeting':'meeting' };
+        let html = '<div class="calendar-timeline">';
+        data.forEach(item => {
+          const cat = item.Category || '';
+          const cls = catClass[cat] || '';
+          html += '<div class="calendar-item' + (cls ? ' calendar-item--' + cls : '') + '">';
+          html += '<div class="calendar-item__head">';
+          html += '<span class="calendar-item__date">' + escHtml(item.Date || '') + '</span>';
+          if (cat) html += '<span class="cms-badge cms-badge--' + (cls||'general') + '">' + escHtml(cat) + '</span>';
+          html += '</div>';
+          html += '<div class="calendar-item__event">' + escHtml(item.Event || '') + '</div>';
+          if (item.Details) html += '<div class="calendar-item__details">' + escHtml(item.Details) + '</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Calendar load error:', e); showEmpty('calendarContainer', 'Could not load academic calendar.'); }
+    })();
+
+    // ─── Newsletters ──────────────────────────────────────
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.newsletter);
+        const container = document.getElementById('newslettersContainer');
+        if (!data.length) { showEmpty('newslettersContainer', 'Newsletters will be available soon.'); return; }
+        const sorted = data.reverse();
+        let html = '<div class="cms-cards-grid">';
+        sorted.forEach(item => {
+          html += '<div class="newsletter-card">';
+          html += '<div class="newsletter-card__header">';
+          if (item.Term) html += '<span class="newsletter-card__term">' + escHtml(item.Term) + '</span>';
+          html += '<span class="newsletter-card__date">' + escHtml(item.Date || '') + '</span>';
+          html += '</div>';
+          html += '<h3 class="newsletter-card__title">' + escHtml(item.Title || '') + '</h3>';
+          html += '<p class="newsletter-card__desc">' + escHtml(item.Description || '') + '</p>';
+          if (item.PDF_URL) {
+            html += '<a href="' + escHtml(item.PDF_URL) + '" class="newsletter-card__download" target="_blank" rel="noopener noreferrer">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
+            html += 'Download PDF</a>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) { console.warn('Newsletters load error:', e); showEmpty('newslettersContainer', 'Could not load newsletters.'); }
+    })();
+  </script>
 </body>
 </html>

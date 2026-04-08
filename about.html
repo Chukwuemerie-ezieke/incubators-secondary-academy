@@ -193,55 +193,14 @@
           </div>
         </div>
 
-        <!-- Staff Section -->
+        <!-- Staff Section (CMS) -->
         <div class="text-center" style="margin-top: var(--space-12);">
-          <p class="section-label fade-in">Our Team</p>
-          <h3 class="section-title fade-in">Meet Our Leadership</h3>
-          <p class="section-subtitle mx-auto fade-in">Dedicated professionals committed to shaping the next generation.</p>
+          <p class="section-label">Our Team</p>
+          <h3 class="section-title">Staff Directory</h3>
+          <p class="section-subtitle mx-auto">Dedicated professionals committed to shaping the next generation.</p>
         </div>
-        <div class="staff-grid">
-          <div class="staff-card fade-in stagger-1">
-            <div class="staff-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg>
-            </div>
-            <h4>Principal</h4>
-            <p>School Leadership</p>
-          </div>
-          <div class="staff-card fade-in stagger-2">
-            <div class="staff-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg>
-            </div>
-            <h4>Vice Principal</h4>
-            <p>Administration</p>
-          </div>
-          <div class="staff-card fade-in stagger-3">
-            <div class="staff-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg>
-            </div>
-            <h4>Head of Academics</h4>
-            <p>Curriculum &amp; Instruction</p>
-          </div>
-          <div class="staff-card fade-in stagger-4">
-            <div class="staff-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg>
-            </div>
-            <h4>Head of Discipleship</h4>
-            <p>Spiritual Formation</p>
-          </div>
-          <div class="staff-card fade-in stagger-5">
-            <div class="staff-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg>
-            </div>
-            <h4>Head of Boarding</h4>
-            <p>Hostel Management</p>
-          </div>
-          <div class="staff-card fade-in stagger-6">
-            <div class="staff-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg>
-            </div>
-            <h4>ICT Manager</h4>
-            <p>Technology &amp; Innovation</p>
-          </div>
+        <div id="staffContainer">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading staff directory&hellip;</p></div>
         </div>
       </div>
     </section>
@@ -329,5 +288,60 @@
   </button>
 
   <script src="app.js"></script>
+  <script src="cms-config.js"></script>
+  <script src="cms-loader.js"></script>
+  <script>
+    (async function() {
+      try {
+        const data = await fetchSheetData(INCUSA_CMS.staff);
+        const container = document.getElementById('staffContainer');
+        if (!data.length) { showEmpty('staffContainer', 'Staff directory coming soon.'); return; }
+
+        // Group by department
+        const deptOrder = ['Academic','Admin','Discipleship','Hostel'];
+        const groups = {};
+        data.forEach(s => {
+          const dept = s.Department || 'Other';
+          if (!groups[dept]) groups[dept] = [];
+          groups[dept].push(s);
+        });
+
+        // Sort departments by predefined order, then alphabetically for others
+        const sortedDepts = Object.keys(groups).sort((a, b) => {
+          const ia = deptOrder.indexOf(a), ib = deptOrder.indexOf(b);
+          if (ia !== -1 && ib !== -1) return ia - ib;
+          if (ia !== -1) return -1;
+          if (ib !== -1) return 1;
+          return a.localeCompare(b);
+        });
+
+        let html = '';
+        sortedDepts.forEach(dept => {
+          html += '<div class="staff-dept-group">';
+          html += '<h4 class="staff-dept-group__title">' + escHtml(dept) + ' Department</h4>';
+          html += '<div class="staff-grid--cms">';
+          groups[dept].forEach(s => {
+            const photoUrl = driveToDirectUrl(s.Photo_URL || '');
+            const initials = getInitials(s.Name || '');
+            html += '<div class="staff-card--cms">';
+            html += '<div class="staff-avatar">';
+            if (photoUrl) {
+              html += '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(s.Name || '') + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + escHtml(initials) + '\'">';
+            } else {
+              html += escHtml(initials);
+            }
+            html += '</div>';
+            html += '<h4>' + escHtml(s.Name || '') + '</h4>';
+            if (s.Role) html += '<div class="staff-role">' + escHtml(s.Role) + '</div>';
+            if (s.Qualification) html += '<div class="staff-qual">' + escHtml(s.Qualification) + '</div>';
+            if (s.Email) html += '<div class="staff-email"><a href="mailto:' + escHtml(s.Email) + '">' + escHtml(s.Email) + '</a></div>';
+            html += '</div>';
+          });
+          html += '</div></div>';
+        });
+        container.innerHTML = html;
+      } catch(e) { console.warn('Staff load error:', e); showEmpty('staffContainer', 'Could not load staff directory.'); }
+    })();
+  </script>
 </body>
 </html>
