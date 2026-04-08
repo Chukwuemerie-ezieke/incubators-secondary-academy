@@ -2191,3 +2191,217 @@ a:hover { color: var(--color-secondary-hover); }
   font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* ============================================================
+   A WORD TO MY STUDENTS
+   ============================================================ */
+.word-section {
+  background: var(--color-bg);
+}
+
+.word-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-16) 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.word-loading__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.word-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--space-12) 0;
+  font-style: italic;
+}
+
+/* Featured (latest) post */
+.word-featured {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 5px solid var(--color-accent);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-10);
+  margin-bottom: var(--space-12);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.word-featured__header {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.word-featured__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.word-featured__date {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.word-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.word-featured__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.25;
+}
+
+.word-featured__body {
+  font-size: var(--text-base);
+  line-height: 1.85;
+  color: var(--color-text);
+  margin-bottom: var(--space-6);
+}
+
+.word-featured__body p + p {
+  margin-top: var(--space-3);
+}
+
+.word-featured__scripture {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-5);
+  color: var(--color-secondary);
+}
+
+.word-featured__scripture svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--color-accent);
+}
+
+.word-featured__scripture blockquote {
+  font-style: italic;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.7;
+}
+
+.word-featured__author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Archive grid */
+.word-archive__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.word-archive__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.word-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.word-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.word-card__date {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.word-card__title {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.word-card__excerpt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  margin-bottom: var(--space-3);
+}
+
+.word-card__scripture {
+  font-size: var(--text-xs);
+  font-style: italic;
+  color: var(--color-accent);
+  border-left: 2px solid var(--color-accent);
+  padding-left: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* Mobile tweaks */
+@media (max-width: 640px) {
+  .word-featured {
+    padding: var(--space-5) var(--space-4);
+    border-left-width: 4px;
+  }
+  .word-archive__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.word-visible {
+  animation: wordFadeUp 0.5s ease both;
+}
+
+@keyframes wordFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

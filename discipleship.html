@@ -198,6 +198,30 @@
       </div>
     </section>
 
+
+    <!-- ============================================================
+         A WORD TO MY STUDENTS
+         ============================================================ -->
+    <section class="word-section section-padding" id="word-to-students">
+      <div class="container">
+
+        <div class="section-header text-center fade-in">
+          <p class="section-label">From the Discipleship Coordinator</p>
+          <h2 class="section-title">A Word to My Students</h2>
+          <p class="section-subtitle">Weekly spiritual encouragement and guidance posted every week by the Discipleship Coordinator.</p>
+        </div>
+
+        <!-- Posts are injected here by JavaScript -->
+        <div id="wordPostsContainer">
+          <div class="word-loading" id="wordLoading">
+            <div class="word-loading__spinner"></div>
+            <p>Loading latest message&hellip;</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -281,5 +305,158 @@
   </button>
 
   <script src="app.js"></script>
+
+  <!-- ====================================================
+       A WORD TO MY STUDENTS — Google Sheets CMS
+       ====================================================
+       HOW TO UPDATE:
+       1. Open the Google Sheet (link in your Google Drive)
+       2. File > Share > Publish to the web
+       3. Select Sheet1, CSV format, then click Publish
+       4. Copy the URL and paste it below as SHEET_CSV_URL
+       ==================================================== -->
+  <script>
+    // ▼▼▼ PASTE YOUR PUBLISHED CSV URL HERE AFTER SETUP ▼▼▼
+    const SHEET_CSV_URL = '';
+    // ▲▲▲ Leave empty to show the sample post below     ▲▲▲
+
+    // Fallback/demo posts shown before the sheet is connected
+    const DEMO_POSTS = [
+      {
+        date: 'April 8, 2026',
+        title: 'Walk in the Light',
+        message: 'Dear Students, as we begin this new term, I want to remind you that you are called to be lights in this world. Each day presents a fresh opportunity to demonstrate the grace of God through your words, your actions, and your attitude toward others. Let your light shine so brightly that those around you cannot help but ask about the source of your joy and peace. Walk humbly, love deeply, and pursue excellence — not for your own glory, but for the glory of God.',
+        scripture: 'John 8:12 — \'I am the light of the world. Whoever follows me will never walk in darkness, but will have the light of life.\''
+      }
+    ];
+
+    // ─── CSV Parser ───────────────────────────────────────
+    function parseCSV(text) {
+      const rows = [];
+      let current = '', inQuote = false, row = [];
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (ch === '"') {
+          if (inQuote && text[i+1] === '"') { current += '"'; i++; }
+          else inQuote = !inQuote;
+        } else if (ch === ',' && !inQuote) {
+          row.push(current.trim()); current = '';
+        } else if ((ch === '\n' || ch === '\r') && !inQuote) {
+          if (ch === '\r' && text[i+1] === '\n') i++;
+          row.push(current.trim()); rows.push(row); row = []; current = '';
+        } else {
+          current += ch;
+        }
+      }
+      if (current || row.length) { row.push(current.trim()); rows.push(row); }
+      return rows;
+    }
+
+    // ─── Render Posts ─────────────────────────────────────
+    function renderPosts(posts) {
+      const container = document.getElementById('wordPostsContainer');
+      if (!posts || posts.length === 0) {
+        container.innerHTML = '<p class="word-empty">No messages posted yet. Check back soon.</p>';
+        return;
+      }
+
+      const latest = posts[0];
+      const older  = posts.slice(1);
+
+      let html = `
+        <article class="word-featured word-visible">
+          <div class="word-featured__header">
+            <div class="word-featured__meta">
+              <span class="word-featured__date">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                ${escHtml(latest.date)}
+              </span>
+              <span class="word-badge">Latest</span>
+            </div>
+            <h3 class="word-featured__title">${escHtml(latest.title)}</h3>
+          </div>
+          <div class="word-featured__body">
+            ${latest.message.split('\n').map(p => p.trim() ? `<p>${escHtml(p)}</p>` : '').join('')}
+          </div>`;
+
+      if (latest.scripture) {
+        html += `
+          <div class="word-featured__scripture">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            <blockquote>${escHtml(latest.scripture)}</blockquote>
+          </div>`;
+      }
+
+      html += `
+          <div class="word-featured__author">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Discipleship Coordinator, INCUSA</span>
+          </div>
+        </article>`;
+
+      if (older.length > 0) {
+        html += `
+        <div class="word-archive word-visible">
+          <h4 class="word-archive__title">Previous Messages</h4>
+          <div class="word-archive__grid">`;
+
+        older.forEach(post => {
+          html += `
+            <article class="word-card">
+              <div class="word-card__date">${escHtml(post.date)}</div>
+              <h4 class="word-card__title">${escHtml(post.title)}</h4>
+              <p class="word-card__excerpt">${escHtml(post.message.slice(0, 160))}${post.message.length > 160 ? '&hellip;' : ''}</p>
+              ${post.scripture ? `<p class="word-card__scripture">${escHtml(post.scripture)}</p>` : ''}
+            </article>`;
+        });
+
+        html += `</div></div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ─── Load from Sheet or Demo ─────────────────────────
+    async function loadWordPosts() {
+      const loading = document.getElementById('wordLoading');
+
+      if (!SHEET_CSV_URL) {
+        // Sheet not yet connected — show demo post
+        if (loading) loading.remove();
+        renderPosts(DEMO_POSTS);
+        return;
+      }
+
+      try {
+        const resp = await fetch(SHEET_CSV_URL);
+        if (!resp.ok) throw new Error('fetch failed');
+        const text = await resp.text();
+        const rows = parseCSV(text);
+        // rows[0] = header, rows[1..n] = data
+        const posts = rows.slice(1)
+          .filter(r => r.length >= 3 && r[0])
+          .map(r => ({
+            date:      r[0] || '',
+            title:     r[1] || 'A Word to My Students',
+            message:   r[2] || '',
+            scripture: r[3] || ''
+          }))
+          .reverse(); // newest first (sheet is oldest-first)
+
+        if (loading) loading.remove();
+        renderPosts(posts);
+      } catch (err) {
+        console.warn('Could not load posts from sheet:', err);
+        if (loading) loading.remove();
+        renderPosts(DEMO_POSTS);
+      }
+    }
+
+    loadWordPosts();
+  </script>
 </body>
 </html>
