@@ -206,20 +206,66 @@
         </div>
 
         <div class="alumni-form-card" id="alumniFormCard">
-          <iframe
-            src="https://docs.google.com/forms/d/e/1FAIpQLSdY2liLTZKGOVrVL-Tut1MX0n2Y1Jd0ZDG9f0061kDRLI9WeQ/viewform?embedded=true"
-            width="100%"
-            height="1100"
-            frameborder="0"
-            marginheight="0"
-            marginwidth="0"
-            style="border: none; border-radius: var(--radius-lg); background: #fff;"
-            title="INCUSA Alumni Registration Form"
-            loading="lazy">
-            Loading form&hellip;
-          </iframe>
-          <p class="alumni-form-note">Your information is kept confidential and used only for alumni network purposes. Responses are reviewed by the ICT Department before being added to the Alumni Directory.</p>
+          <form id="alumniFormEl" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="alumni-name">Full Name <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="alumni-name" name="entry.542050407" placeholder="Your full name" required>
+              </div>
+              <div class="form-group">
+                <label for="alumni-set">Set / Class <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="alumni-set" name="entry.1743247130" placeholder="e.g. Pioneer Set, Set 2">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="alumni-grad-year">Graduation Year <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="alumni-grad-year" name="entry.1445117057" placeholder="e.g. 2025" required>
+              </div>
+              <div class="form-group">
+                <label for="alumni-occupation">Current Occupation <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="alumni-occupation" name="entry.1563979410" placeholder="e.g. University Student, Engineer" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="alumni-org">Organisation / University</label>
+                <input type="text" id="alumni-org" name="entry.2094436565" placeholder="Where you currently work or study">
+              </div>
+              <div class="form-group">
+                <label for="alumni-location">Current Location</label>
+                <input type="text" id="alumni-location" name="entry.980139200" placeholder="City, State">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="alumni-email">Email Address <span style="color: var(--color-error);">*</span></label>
+                <input type="email" id="alumni-email" name="entry.838692253" placeholder="you@example.com" required>
+              </div>
+              <div class="form-group">
+                <label for="alumni-phone">Phone Number</label>
+                <input type="tel" id="alumni-phone" name="entry.1206940135" placeholder="+234 800 000 0000">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="alumni-message">How INCUSA Shaped You</label>
+              <textarea id="alumni-message" name="entry.976428913" rows="4" placeholder="Share briefly how your time at INCUSA shaped who you are today..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-icon" style="width: 100%; justify-content: center;">
+              Register as Alumni
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+          <div class="form-success" id="alumniFormSuccess" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:48px;height:48px;color:var(--color-accent);margin-bottom:var(--space-4);"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            <h4>Thank You!</h4>
+            <p>Your details have been received and will appear in the Alumni Directory shortly.</p>
+          </div>
+          <p class="alumni-form-note">Your information is kept confidential and used only for alumni network purposes.</p>
         </div>
+
+        <!-- Hidden iframe for Google Form submission -->
+        <iframe name="alumni-form-iframe" id="alumniFormIframe" style="display:none;" aria-hidden="true"></iframe>
       </div>
     </section>
 
@@ -553,6 +599,65 @@
         } else {
           document.getElementById('testimonialsContainer').innerHTML = '<p class="cms-empty">Could not load testimonials. Please try again later.</p>';
         }
+      });
+    })();
+  </script>
+
+  <!-- Alumni Form → Google Form submission -->
+  <script>
+    (function() {
+      const GFORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSdY2liLTZKGOVrVL-Tut1MX0n2Y1Jd0ZDG9f0061kDRLI9WeQ/formResponse';
+      const form = document.getElementById('alumniFormEl');
+      if (!form) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Basic validation
+        const required = form.querySelectorAll('[required]');
+        let valid = true;
+        required.forEach(function(field) {
+          if (!field.value.trim()) {
+            field.style.borderColor = 'var(--color-error, #c0392b)';
+            valid = false;
+          } else {
+            field.style.borderColor = '';
+          }
+        });
+        if (!valid) return;
+
+        // Disable button
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        // Build form data
+        var formData = new FormData(form);
+
+        // Submit via hidden iframe to avoid CORS issues
+        var hiddenForm = document.createElement('form');
+        hiddenForm.method = 'POST';
+        hiddenForm.action = GFORM_ACTION;
+        hiddenForm.target = 'alumni-form-iframe';
+        hiddenForm.style.display = 'none';
+
+        for (var pair of formData.entries()) {
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = pair[0];
+          input.value = pair[1];
+          hiddenForm.appendChild(input);
+        }
+
+        document.body.appendChild(hiddenForm);
+        hiddenForm.submit();
+
+        // Show success after a short delay (form posts to iframe)
+        setTimeout(function() {
+          form.style.display = 'none';
+          document.getElementById('alumniFormSuccess').style.display = 'flex';
+          document.body.removeChild(hiddenForm);
+        }, 1000);
       });
     })();
   </script>
