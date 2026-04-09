@@ -418,7 +418,7 @@
     (function() {
       // ─── Sheet URLs ───
       var SHEET_UPDATES       = 'https://docs.google.com/spreadsheets/d/1TLhwN11kmfq0Fd8HNL40_kKEJjsqnpyhTbY46OMZlX4/gviz/tq?tqx=out:csv&sheet=Updates';
-      var SHEET_DIRECTORY     = 'https://docs.google.com/spreadsheets/d/1vITK2QHRlS9DKJgGItE90r3fcTX6StaGGwUysi22-Wk/gviz/tq?tqx=out:csv&sheet=Alumni';
+      var SHEET_DIRECTORY     = 'https://docs.google.com/spreadsheets/d/1vITK2QHRlS9DKJgGItE90r3fcTX6StaGGwUysi22-Wk/gviz/tq?tqx=out:csv&sheet=Form%20Responses%201';
       var SHEET_ACHIEVEMENTS  = 'https://docs.google.com/spreadsheets/d/1jkMqJL0wmU2rQrzDQWg7CN4YQVAOuTu2Q2c_GmthEQI/gviz/tq?tqx=out:csv&sheet=Achievements';
       var SHEET_TESTIMONIALS  = 'https://docs.google.com/spreadsheets/d/1Lv7tMo4DTLYebN5AIiD_BJagk_icLemG1ZYTCzykS8c/gviz/tq?tqx=out:csv&sheet=Testimonials';
 
@@ -481,31 +481,46 @@
           container.innerHTML = '<p class="cms-empty">No alumni profiles yet. Check back soon!</p>';
           return;
         }
-        var filtered = currentSetFilter === 'All' ? directoryData : directoryData.filter(function(a) { return a.Set === currentSetFilter; });
+        // Normalize: support both original Alumni sheet columns AND Form Responses columns
+        function norm(a) {
+          return {
+            name:       a['Full Name']              || a.Name              || '',
+            set:        a['Set / Class']             || a.Set               || '',
+            year:       a['Graduation Year']         || a.Graduation_Year   || '',
+            occupation: a['Current Occupation']       || a.Occupation        || '',
+            org:        a['Organisation / University']|| a.Organisation      || '',
+            location:   a['Current Location']         || a.Location          || '',
+            photo:      a.Photo_URL                  || '',
+            bio:        a['How INCUSA Shaped You']   || a.Bio               || ''
+          };
+        }
+
+        var filtered = currentSetFilter === 'All' ? directoryData : directoryData.filter(function(a) { return (norm(a)).set === currentSetFilter; });
         if (!filtered.length) {
           container.innerHTML = '<p class="cms-empty">No alumni in this set.</p>';
           return;
         }
         var html = '<div class="alumni-dir-grid">';
-        filtered.forEach(function(a) {
-          var photoUrl = driveToDirectUrl(a.Photo_URL || '');
-          var initials = getInitials(a.Name || '');
+        filtered.forEach(function(raw) {
+          var a = norm(raw);
+          var photoUrl = driveToDirectUrl(a.photo);
+          var initials = getInitials(a.name);
           html += '<div class="alumni-card">';
           html += '<div class="alumni-avatar">';
           if (photoUrl) {
-            html += '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(a.Name || '') + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + escHtml(initials) + '\'">';
+            html += '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(a.name) + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + escHtml(initials) + '\'">';
           } else {
             html += escHtml(initials);
           }
           html += '</div>';
-          html += '<h3 class="alumni-card__name">' + escHtml(a.Name || '') + '</h3>';
-          if (a.Set || a.Graduation_Year) {
-            html += '<span class="alumni-card__set-badge">' + escHtml(a.Set || '') + (a.Graduation_Year ? ' &middot; ' + escHtml(a.Graduation_Year) : '') + '</span>';
+          html += '<h3 class="alumni-card__name">' + escHtml(a.name) + '</h3>';
+          if (a.set || a.year) {
+            html += '<span class="alumni-card__set-badge">' + escHtml(a.set) + (a.year ? ' &middot; ' + escHtml(a.year) : '') + '</span>';
           }
-          if (a.Occupation) html += '<div class="alumni-card__occupation">' + escHtml(a.Occupation) + '</div>';
-          if (a.Organisation) html += '<div class="alumni-card__org">' + escHtml(a.Organisation) + '</div>';
-          if (a.Location) {
-            html += '<div class="alumni-card__location"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' + escHtml(a.Location) + '</div>';
+          if (a.occupation) html += '<div class="alumni-card__occupation">' + escHtml(a.occupation) + '</div>';
+          if (a.org) html += '<div class="alumni-card__org">' + escHtml(a.org) + '</div>';
+          if (a.location) {
+            html += '<div class="alumni-card__location"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' + escHtml(a.location) + '</div>';
           }
           html += '</div>';
         });
@@ -520,7 +535,8 @@
         var sets = ['All'];
         var seen = {};
         data.forEach(function(a) {
-          if (a.Set && !seen[a.Set]) { sets.push(a.Set); seen[a.Set] = true; }
+          var s = a['Set / Class'] || a.Set || '';
+          if (s && !seen[s]) { sets.push(s); seen[s] = true; }
         });
         if (sets.length > 1) {
           filterRow.style.display = 'flex';
