@@ -218,6 +218,71 @@
       </div>
     </section>
 
+
+    <!-- ============================================================
+         STAY INFORMED — PARENT MAILING LIST
+         ============================================================ -->
+    <section class="section-padding" style="background: var(--color-primary);">
+      <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-8); align-items: center; max-width: 900px; margin: 0 auto;">
+          <div class="text-center">
+            <p class="section-label" style="color: var(--color-accent);">FOR PARENTS &amp; GUARDIANS</p>
+            <h2 class="section-title mx-auto" style="color: #fff;">Stay Informed</h2>
+            <p class="section-subtitle mx-auto" style="color: rgba(255,255,255,0.75);">Register to receive school announcements, newsletters, exam schedules, and important updates directly to your email.</p>
+          </div>
+
+          <div class="alumni-form-card" style="margin: 0 auto; width: 100%; max-width: 680px;">
+            <form id="stayInformedForm" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="si-parent">Parent / Guardian Name <span style="color: var(--color-error);">*</span></label>
+                  <input type="text" id="si-parent" name="entry.548128340" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                  <label for="si-email">Email Address <span style="color: var(--color-error);">*</span></label>
+                  <input type="email" id="si-email" name="entry.959843680" placeholder="you@example.com" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="si-phone">Phone / WhatsApp</label>
+                  <input type="tel" id="si-phone" name="entry.1889051974" placeholder="+234 800 000 0000">
+                </div>
+                <div class="form-group">
+                  <label for="si-class">Student Class</label>
+                  <select id="si-class" name="entry.1240626674" style="width:100%;padding:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-bg);color:var(--color-text);">
+                    <option value="">Select class</option>
+                    <option value="JSS1">JSS1</option>
+                    <option value="JSS2">JSS2</option>
+                    <option value="JSS3">JSS3</option>
+                    <option value="SS1">SS1</option>
+                    <option value="SS2">SS2</option>
+                    <option value="SS3">SS3</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="si-student">Student Name <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="si-student" name="entry.1120677278" placeholder="Your child's name" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg btn-icon" style="width: 100%; justify-content: center; background: var(--color-accent); border-color: var(--color-accent);">
+                Subscribe to Updates
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              </button>
+            </form>
+            <div class="form-success" id="stayInformedSuccess" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:48px;height:48px;color:var(--color-accent);margin-bottom:var(--space-4);"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+              <h4>You're Subscribed!</h4>
+              <p>You will now receive school announcements, newsletters, and important updates via email.</p>
+            </div>
+            <p class="alumni-form-note">We respect your privacy. Your information is used only for school communications.</p>
+          </div>
+        </div>
+
+        <iframe name="si-form-iframe" style="display:none;" aria-hidden="true"></iframe>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -332,6 +397,59 @@
         html += '</div>';
         container.innerHTML = html;
       } catch(e) { console.warn('Testimonials load error:', e); showEmpty('testimonialsContainer', 'Could not load testimonials.'); }
+    })();
+  </script>
+
+  <!-- Stay Informed Form → Google Form -->
+  <script>
+    (function() {
+      var form = document.getElementById('stayInformedForm');
+      if (!form) return;
+
+      var GFORM = 'https://docs.google.com/forms/d/e/1FAIpQLSeQDhZQ-wUJW4V4inDRDmB5110jYa-YTneqg_gIpdnSNEnnBA/formResponse';
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var required = form.querySelectorAll('[required]');
+        var valid = true;
+        required.forEach(function(field) {
+          if (!field.value.trim()) {
+            field.style.borderColor = 'var(--color-error, #c0392b)';
+            valid = false;
+          } else {
+            field.style.borderColor = '';
+          }
+        });
+        if (!valid) return;
+
+        var btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Subscribing...';
+
+        var formData = new FormData(form);
+        var hiddenForm = document.createElement('form');
+        hiddenForm.method = 'POST';
+        hiddenForm.action = GFORM;
+        hiddenForm.target = 'si-form-iframe';
+        hiddenForm.style.display = 'none';
+
+        for (var pair of formData.entries()) {
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = pair[0];
+          input.value = pair[1];
+          hiddenForm.appendChild(input);
+        }
+
+        document.body.appendChild(hiddenForm);
+        hiddenForm.submit();
+
+        setTimeout(function() {
+          form.style.display = 'none';
+          document.getElementById('stayInformedSuccess').style.display = 'flex';
+          document.body.removeChild(hiddenForm);
+        }, 1000);
+      });
     })();
   </script>
 </body>
