@@ -180,6 +180,70 @@
     </section>
 
     <!-- ============================================================
+         SHARE YOUR ACHIEVEMENT FORM
+         ============================================================ -->
+    <section class="section-padding" style="background: var(--color-secondary);">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label" style="color: var(--color-accent);">SHARE YOUR MILESTONE</p>
+          <h2 class="section-title mx-auto" style="color: #fff;">Report an Achievement</h2>
+          <p class="section-subtitle mx-auto" style="color: rgba(255,255,255,0.75);">Got admitted to university? Won an award? Landed a great job? Let us celebrate with you.</p>
+        </div>
+
+        <div class="alumni-form-card" style="max-width: 720px; margin: 0 auto;">
+          <form id="achievementsFormEl" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ach-name">Full Name <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="ach-name" name="entry.1012560676" placeholder="Your name" required>
+              </div>
+              <div class="form-group">
+                <label for="ach-set">Set / Class <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="ach-set" name="entry.734746455" placeholder="e.g. Pioneer Set" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ach-year">Year <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="ach-year" name="entry.1482248273" placeholder="e.g. 2026" required>
+              </div>
+              <div class="form-group">
+                <label for="ach-category">Category <span style="color: var(--color-error);">*</span></label>
+                <select id="ach-category" name="entry.386843915" required style="width:100%;padding:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-bg);color:var(--color-text);">
+                  <option value="">Select category</option>
+                  <option value="University">University Admission</option>
+                  <option value="Award">Award / Prize</option>
+                  <option value="Career">Career Achievement</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="ach-title">Achievement <span style="color: var(--color-error);">*</span></label>
+              <input type="text" id="ach-title" name="entry.1905412824" placeholder="e.g. Admission to University of Nigeria to study Medicine" required>
+            </div>
+            <div class="form-group">
+              <label for="ach-details">Details</label>
+              <textarea id="ach-details" name="entry.449244765" rows="4" placeholder="Tell us more about this achievement and how INCUSA prepared you for it..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-icon" style="width: 100%; justify-content: center;">
+              Submit Achievement
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+          <div class="form-success" id="achievementsFormSuccess" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:48px;height:48px;color:var(--color-accent);margin-bottom:var(--space-4);"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            <h4>Congratulations!</h4>
+            <p>Your achievement has been submitted. It will appear on the website after review.</p>
+          </div>
+          <p class="alumni-form-note">Achievements are reviewed by the ICT Department before being published.</p>
+        </div>
+
+        <iframe name="achievements-form-iframe" id="achievementsFormIframe" style="display:none;" aria-hidden="true"></iframe>
+      </div>
+    </section>
+
+    <!-- ============================================================
          TESTIMONIALS
          ============================================================ -->
     <section class="section-padding" id="alumniTestimonials" style="background: var(--color-surface-2);">
@@ -561,14 +625,26 @@
           container.innerHTML = '<p class="cms-empty">No achievements recorded yet. Check back soon!</p>';
           return;
         }
+        // Normalize: support both Achievements sheet AND Form Responses columns
+        function normA(a) {
+          return {
+            name:        a['Full Name']    || a.Name        || '',
+            set:         a['Set / Class']   || a.Set         || '',
+            year:        a.Year             || '',
+            achievement: a.Achievement      || '',
+            category:    a.Category         || '',
+            details:     a.Details          || ''
+          };
+        }
         var html = '<div class="alumni-achievements-grid">';
-        data.forEach(function(a) {
+        data.forEach(function(raw) {
+          var a = normA(raw);
           html += '<div class="achievement-card">';
-          if (a.Category) html += '<span class="achievement-card__badge ' + achievementCatClass(a.Category) + '">' + escHtml(a.Category) + '</span>';
-          html += '<h3 class="achievement-card__title">' + escHtml(a.Achievement || '') + '</h3>';
-          html += '<div class="achievement-card__meta">' + escHtml(a.Name || '') + (a.Set ? ' &middot; ' + escHtml(a.Set) : '') + '</div>';
-          if (a.Year) html += '<div class="achievement-card__year">' + escHtml(a.Year) + '</div>';
-          if (a.Details) html += '<p class="achievement-card__details">' + escHtml(a.Details) + '</p>';
+          if (a.category) html += '<span class="achievement-card__badge ' + achievementCatClass(a.category) + '">' + escHtml(a.category) + '</span>';
+          html += '<h3 class="achievement-card__title">' + escHtml(a.achievement) + '</h3>';
+          html += '<div class="achievement-card__meta">' + escHtml(a.name) + (a.set ? ' &middot; ' + escHtml(a.set) : '') + '</div>';
+          if (a.year) html += '<div class="achievement-card__year">' + escHtml(a.year) + '</div>';
+          if (a.details) html += '<p class="achievement-card__details">' + escHtml(a.details) + '</p>';
           html += '</div>';
         });
         html += '</div>';
@@ -747,6 +823,17 @@
         'https://docs.google.com/forms/d/e/1FAIpQLSdY2liLTZKGOVrVL-Tut1MX0n2Y1Jd0ZDG9f0061kDRLI9WeQ/formResponse',
         'alumni-form-iframe',
         'alumniFormSuccess'
+      );
+    }
+
+    // Alumni Achievements form
+    var achForm = document.getElementById('achievementsFormEl');
+    if (achForm) {
+      submitToGoogleForm(
+        achForm,
+        'https://docs.google.com/forms/d/e/1FAIpQLScaPDqr1UMLgruqvZt_ak9a__SumvCfdAk-NRNqoKPzz39lxw/formResponse',
+        'achievements-form-iframe',
+        'achievementsFormSuccess'
       );
     }
 
