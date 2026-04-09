@@ -195,6 +195,66 @@
     </section>
 
     <!-- ============================================================
+         SHARE YOUR STORY FORM
+         ============================================================ -->
+    <section class="section-padding" style="background: var(--color-primary);">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label" style="color: var(--color-accent);">SHARE YOUR VOICE</p>
+          <h2 class="section-title mx-auto" style="color: #fff;">Tell Your INCUSA Story</h2>
+          <p class="section-subtitle mx-auto" style="color: rgba(255,255,255,0.75);">Were you shaped by your time at Incubators? Share your experience and inspire current students.</p>
+        </div>
+
+        <div class="alumni-form-card" style="max-width: 720px; margin: 0 auto;">
+          <form id="voicesFormEl" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="voice-name">Full Name <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="voice-name" name="entry.1778082855" placeholder="Your name" required>
+              </div>
+              <div class="form-group">
+                <label for="voice-set">Set / Class <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="voice-set" name="entry.1310978012" placeholder="e.g. Pioneer Set" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="voice-year">Graduation Year <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="voice-year" name="entry.1367887243" placeholder="e.g. 2025" required>
+              </div>
+              <div class="form-group">
+                <label for="voice-role">Current Role</label>
+                <input type="text" id="voice-role" name="entry.1487102808" placeholder="e.g. Medical Student, Engineer">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="voice-quote">Your Testimonial <span style="color: var(--color-error);">*</span></label>
+              <textarea id="voice-quote" name="entry.35713586" rows="5" placeholder="Share how your time at INCUSA impacted your life — spiritually, academically, socially…" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="voice-photo">Photo URL (optional)</label>
+              <input type="url" id="voice-photo" name="entry.932988385" placeholder="Google Drive link to your photo">
+              <small style="color: var(--color-text-muted); font-size: 0.75rem;">Upload your photo to Google Drive → right-click → Share → Copy link, then paste here.</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-icon" style="width: 100%; justify-content: center;">
+              Submit My Story
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+          <div class="form-success" id="voicesFormSuccess" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:48px;height:48px;color:var(--color-accent);margin-bottom:var(--space-4);"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            <h4>Thank You!</h4>
+            <p>Your story has been received. It may be featured on the website after review.</p>
+          </div>
+          <p class="alumni-form-note">Your testimonial may be displayed on the school website. We may lightly edit for clarity.</p>
+        </div>
+
+        <!-- Hidden iframe for Voices form submission -->
+        <iframe name="voices-form-iframe" id="voicesFormIframe" style="display:none;" aria-hidden="true"></iframe>
+      </div>
+    </section>
+
+    <!-- ============================================================
          STAY CONNECTED FORM
          ============================================================ -->
     <section class="section-padding" id="alumniConnect">
@@ -603,19 +663,14 @@
     })();
   </script>
 
-  <!-- Alumni Form → Google Form submission -->
+  <!-- Alumni Forms → Google Form submissions -->
   <script>
-    (function() {
-      const GFORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSdY2liLTZKGOVrVL-Tut1MX0n2Y1Jd0ZDG9f0061kDRLI9WeQ/formResponse';
-      const form = document.getElementById('alumniFormEl');
-      if (!form) return;
-
-      form.addEventListener('submit', function(e) {
+    // Reusable: submit any form to Google Forms via hidden iframe
+    function submitToGoogleForm(formEl, gformAction, iframeName, successElId) {
+      formEl.addEventListener('submit', function(e) {
         e.preventDefault();
-
-        // Basic validation
-        const required = form.querySelectorAll('[required]');
-        let valid = true;
+        var required = formEl.querySelectorAll('[required]');
+        var valid = true;
         required.forEach(function(field) {
           if (!field.value.trim()) {
             field.style.borderColor = 'var(--color-error, #c0392b)';
@@ -626,19 +681,15 @@
         });
         if (!valid) return;
 
-        // Disable button
-        const btn = form.querySelector('button[type="submit"]');
+        var btn = formEl.querySelector('button[type="submit"]');
         btn.disabled = true;
         btn.textContent = 'Submitting...';
 
-        // Build form data
-        var formData = new FormData(form);
-
-        // Submit via hidden iframe to avoid CORS issues
+        var formData = new FormData(formEl);
         var hiddenForm = document.createElement('form');
         hiddenForm.method = 'POST';
-        hiddenForm.action = GFORM_ACTION;
-        hiddenForm.target = 'alumni-form-iframe';
+        hiddenForm.action = gformAction;
+        hiddenForm.target = iframeName;
         hiddenForm.style.display = 'none';
 
         for (var pair of formData.entries()) {
@@ -652,14 +703,35 @@
         document.body.appendChild(hiddenForm);
         hiddenForm.submit();
 
-        // Show success after a short delay (form posts to iframe)
         setTimeout(function() {
-          form.style.display = 'none';
-          document.getElementById('alumniFormSuccess').style.display = 'flex';
+          formEl.style.display = 'none';
+          document.getElementById(successElId).style.display = 'flex';
           document.body.removeChild(hiddenForm);
         }, 1000);
       });
-    })();
+    }
+
+    // Alumni Registration form
+    var regForm = document.getElementById('alumniFormEl');
+    if (regForm) {
+      submitToGoogleForm(
+        regForm,
+        'https://docs.google.com/forms/d/e/1FAIpQLSdY2liLTZKGOVrVL-Tut1MX0n2Y1Jd0ZDG9f0061kDRLI9WeQ/formResponse',
+        'alumni-form-iframe',
+        'alumniFormSuccess'
+      );
+    }
+
+    // Alumni Voices / Testimonials form
+    var voicesForm = document.getElementById('voicesFormEl');
+    if (voicesForm) {
+      submitToGoogleForm(
+        voicesForm,
+        'https://docs.google.com/forms/d/e/1FAIpQLSdz7gSAo4icOXTPqEYxs120Elit6WdoaSdRtvaEXByqDBaDsQ/formResponse',
+        'voices-form-iframe',
+        'voicesFormSuccess'
+      );
+    }
   </script>
 </body>
 </html>
