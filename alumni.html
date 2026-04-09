@@ -420,7 +420,7 @@
       var SHEET_UPDATES       = 'https://docs.google.com/spreadsheets/d/1TLhwN11kmfq0Fd8HNL40_kKEJjsqnpyhTbY46OMZlX4/gviz/tq?tqx=out:csv&sheet=Updates';
       var SHEET_DIRECTORY     = 'https://docs.google.com/spreadsheets/d/1vITK2QHRlS9DKJgGItE90r3fcTX6StaGGwUysi22-Wk/gviz/tq?tqx=out:csv&sheet=Form%20Responses%201';
       var SHEET_ACHIEVEMENTS  = 'https://docs.google.com/spreadsheets/d/1jkMqJL0wmU2rQrzDQWg7CN4YQVAOuTu2Q2c_GmthEQI/gviz/tq?tqx=out:csv&sheet=Achievements';
-      var SHEET_TESTIMONIALS  = 'https://docs.google.com/spreadsheets/d/1Lv7tMo4DTLYebN5AIiD_BJagk_icLemG1ZYTCzykS8c/gviz/tq?tqx=out:csv&sheet=Testimonials';
+      var SHEET_TESTIMONIALS  = 'https://docs.google.com/spreadsheets/d/1Lv7tMo4DTLYebN5AIiD_BJagk_icLemG1ZYTCzykS8c/gviz/tq?tqx=out:csv&sheet=Form%20Responses%201';
 
       // ─── Helper: truncate text ───
       function truncate(str, max) {
@@ -582,27 +582,39 @@
           container.innerHTML = '<p class="cms-empty">No testimonials yet. Check back soon!</p>';
           return;
         }
+        // Normalize: support both Testimonials sheet AND Form Responses columns
+        function normT(t) {
+          return {
+            name:  t['Full Name']           || t.Name            || '',
+            set:   t['Set / Class']          || t.Set             || '',
+            year:  t['Graduation Year']      || t.Graduation_Year || '',
+            role:  t['Current Role']         || t.Current_Role    || '',
+            quote: t['Your Testimonial']     || t.Quote           || '',
+            photo: t['Photo URL (optional)'] || t.Photo_URL       || ''
+          };
+        }
         var html = '<div class="alumni-testimonials-grid">';
-        data.forEach(function(t) {
-          var photoUrl = driveToDirectUrl(t.Photo_URL || '');
-          var initials = getInitials(t.Name || '');
+        data.forEach(function(raw) {
+          var t = normT(raw);
+          var photoUrl = driveToDirectUrl(t.photo);
+          var initials = getInitials(t.name);
           html += '<div class="alumni-testimonial-card">';
           html += '<span class="alumni-testimonial-card__quote-mark">&ldquo;</span>';
-          html += '<p class="alumni-testimonial-card__text">' + escHtml(t.Quote || '') + '</p>';
+          html += '<p class="alumni-testimonial-card__text">' + escHtml(t.quote) + '</p>';
           html += '<div class="alumni-testimonial-card__footer">';
           html += '<div class="alumni-testimonial-card__avatar">';
           if (photoUrl) {
-            html += '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(t.Name || '') + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + escHtml(initials) + '\'">';
+            html += '<img src="' + escHtml(photoUrl) + '" alt="' + escHtml(t.name) + '" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + escHtml(initials) + '\'">';
           } else {
             html += escHtml(initials);
           }
           html += '</div>';
           html += '<div>';
-          html += '<div class="alumni-testimonial-card__name">' + escHtml(t.Name || '') + '</div>';
-          if (t.Set || t.Graduation_Year) {
-            html += '<div class="alumni-testimonial-card__set">' + escHtml(t.Set || '') + (t.Graduation_Year ? ' &middot; ' + escHtml(t.Graduation_Year) : '') + '</div>';
+          html += '<div class="alumni-testimonial-card__name">' + escHtml(t.name) + '</div>';
+          if (t.set || t.year) {
+            html += '<div class="alumni-testimonial-card__set">' + escHtml(t.set) + (t.year ? ' &middot; ' + escHtml(t.year) : '') + '</div>';
           }
-          if (t.Current_Role) html += '<div class="alumni-testimonial-card__role">' + escHtml(t.Current_Role) + '</div>';
+          if (t.role) html += '<div class="alumni-testimonial-card__role">' + escHtml(t.role) + '</div>';
           html += '</div></div></div>';
         });
         html += '</div>';
