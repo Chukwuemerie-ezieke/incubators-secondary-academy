@@ -227,6 +227,88 @@
       </div>
     </section>
 
+    <!-- ============================================================
+         PARENT INQUIRY & COMPLAINTS
+         ============================================================ -->
+    <section class="section-padding" style="background: var(--color-primary);">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label" style="color: var(--color-accent);">FOR PARENTS & GUARDIANS</p>
+          <h2 class="section-title mx-auto" style="color: #fff;">Inquiry & Complaints</h2>
+          <p class="section-subtitle mx-auto" style="color: rgba(255,255,255,0.75);">Have a concern about your child's welfare, academics, or school experience? We take every inquiry seriously and will respond promptly.</p>
+        </div>
+
+        <div class="alumni-form-card" style="max-width: 780px; margin: 0 auto;">
+          <form id="parentFormEl" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="parent-name">Parent / Guardian Name <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="parent-name" name="entry.569987230" placeholder="Your full name" required>
+              </div>
+              <div class="form-group">
+                <label for="parent-email">Email Address <span style="color: var(--color-error);">*</span></label>
+                <input type="email" id="parent-email" name="entry.2140804095" placeholder="you@example.com" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="parent-phone">Phone Number <span style="color: var(--color-error);">*</span></label>
+                <input type="tel" id="parent-phone" name="entry.1788582242" placeholder="+234 800 000 0000" required>
+              </div>
+              <div class="form-group">
+                <label for="parent-category">Category <span style="color: var(--color-error);">*</span></label>
+                <select id="parent-category" name="entry.1204796048" required style="width:100%;padding:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-bg);color:var(--color-text);">
+                  <option value="">Select category</option>
+                  <option value="Inquiry">General Inquiry</option>
+                  <option value="Complaint">Complaint</option>
+                  <option value="Suggestion">Suggestion</option>
+                  <option value="Feedback">Feedback</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="parent-student">Student Name <span style="color: var(--color-error);">*</span></label>
+                <input type="text" id="parent-student" name="entry.1765138224" placeholder="Your child's name" required>
+              </div>
+              <div class="form-group">
+                <label for="parent-class">Student Class</label>
+                <select id="parent-class" name="entry.932664347" style="width:100%;padding:var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-bg);color:var(--color-text);">
+                  <option value="">Select class</option>
+                  <option value="JSS1">JSS1</option>
+                  <option value="JSS2">JSS2</option>
+                  <option value="JSS3">JSS3</option>
+                  <option value="SS1">SS1</option>
+                  <option value="SS2">SS2</option>
+                  <option value="SS3">SS3</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="parent-subject">Subject <span style="color: var(--color-error);">*</span></label>
+              <input type="text" id="parent-subject" name="entry.2017462337" placeholder="Brief subject of your inquiry" required>
+            </div>
+            <div class="form-group">
+              <label for="parent-message">Message <span style="color: var(--color-error);">*</span></label>
+              <textarea id="parent-message" name="entry.1257162418" rows="5" placeholder="Describe your inquiry, complaint, or suggestion in detail..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-icon" style="width: 100%; justify-content: center;">
+              Submit Inquiry
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+          <div class="form-success" id="parentFormSuccess" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:48px;height:48px;color:var(--color-accent);margin-bottom:var(--space-4);"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            <h4>Thank You!</h4>
+            <p>Your inquiry has been received. The school administration will respond within 48 hours.</p>
+          </div>
+          <p class="alumni-form-note">All inquiries are treated confidentially. You will receive a response via email or phone.</p>
+        </div>
+
+        <iframe name="parent-form-iframe" id="parentFormIframe" style="display:none;" aria-hidden="true"></iframe>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -311,5 +393,58 @@
   </button>
 
   <script src="app.js"></script>
+
+  <!-- Parent Inquiry Form → Google Form submission -->
+  <script>
+    (function() {
+      var form = document.getElementById('parentFormEl');
+      if (!form) return;
+
+      var GFORM = 'https://docs.google.com/forms/d/e/1FAIpQLSeojcNOkUJFDOgjmHA2hk9y0JRJ0bwlPZbhtgOuGGCYquGwDA/formResponse';
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var required = form.querySelectorAll('[required]');
+        var valid = true;
+        required.forEach(function(field) {
+          if (!field.value.trim()) {
+            field.style.borderColor = 'var(--color-error, #c0392b)';
+            valid = false;
+          } else {
+            field.style.borderColor = '';
+          }
+        });
+        if (!valid) return;
+
+        var btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        var formData = new FormData(form);
+        var hiddenForm = document.createElement('form');
+        hiddenForm.method = 'POST';
+        hiddenForm.action = GFORM;
+        hiddenForm.target = 'parent-form-iframe';
+        hiddenForm.style.display = 'none';
+
+        for (var pair of formData.entries()) {
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = pair[0];
+          input.value = pair[1];
+          hiddenForm.appendChild(input);
+        }
+
+        document.body.appendChild(hiddenForm);
+        hiddenForm.submit();
+
+        setTimeout(function() {
+          form.style.display = 'none';
+          document.getElementById('parentFormSuccess').style.display = 'flex';
+          document.body.removeChild(hiddenForm);
+        }, 1000);
+      });
+    })();
+  </script>
 </body>
 </html>
