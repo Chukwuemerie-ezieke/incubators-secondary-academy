@@ -3301,3 +3301,77 @@ a:hover { color: var(--color-secondary-hover); }
   .alumni-testimonials-grid { grid-template-columns: 1fr; }
   .alumni-form-card { padding: var(--space-5); }
 }
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.faq-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.faq-item:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.faq-item__question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: left;
+  line-height: 1.4;
+}
+
+.faq-item__question:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+.faq-item__chevron {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: var(--color-text-muted);
+  transition: transform 0.25s ease;
+}
+
+.faq-item__question.open .faq-item__chevron {
+  transform: rotate(180deg);
+}
+
+.faq-item__answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 var(--space-5);
+}
+
+.faq-item__question.open + .faq-item__answer {
+  max-height: 500px;
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+.faq-item__answer p {
+  font-size: var(--text-sm);
+  line-height: 1.75;
+  color: var(--color-text);
+  margin: 0;
+}

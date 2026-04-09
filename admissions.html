@@ -231,6 +231,28 @@
       </div>
     </section>
 
+
+    <!-- ============================================================
+         FREQUENTLY ASKED QUESTIONS
+         ============================================================ -->
+    <section class="section-padding" style="background: var(--color-surface-2, var(--color-surface));">
+      <div class="container">
+        <div class="text-center" style="margin-bottom: var(--space-10);">
+          <p class="section-label">HAVE QUESTIONS?</p>
+          <h2 class="section-title mx-auto">Frequently Asked Questions</h2>
+          <p class="section-subtitle mx-auto">Find quick answers to common questions about admissions, boarding, academics, and school life.</p>
+        </div>
+
+        <!-- Category filters -->
+        <div id="faqFilters" class="gallery-filter" style="display:none; margin-bottom: var(--space-8);"></div>
+
+        <!-- FAQ accordion -->
+        <div id="faqContainer" style="max-width: 820px; margin: 0 auto;">
+          <div class="cms-loading"><div class="cms-loading__spinner"></div><p>Loading FAQs&hellip;</p></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================================
@@ -361,6 +383,80 @@
         html += '</div>';
         container.innerHTML = html;
       } catch(e) { console.warn('Admissions load error:', e); showEmpty('admissionsContainer', 'Could not load admission details.'); }
+    })();
+  </script>
+
+  <!-- FAQ Section -->
+  <script>
+    (function() {
+      var FAQ_URL = 'https://docs.google.com/spreadsheets/d/1oJmlqLaUs9V4rgaEnW-ra8RSm3HyvLi3RD2LKC9rPkU/gviz/tq?tqx=out:csv&sheet=FAQ';
+      var container = document.getElementById('faqContainer');
+      var filterRow = document.getElementById('faqFilters');
+      var allData = [];
+      var currentCat = 'All';
+
+      function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+      function renderFAQ() {
+        if (!allData.length) {
+          container.innerHTML = '<p class="cms-empty">No FAQs yet. Check back soon!</p>';
+          return;
+        }
+        var filtered = currentCat === 'All' ? allData : allData.filter(function(f) { return f.Category === currentCat; });
+        if (!filtered.length) {
+          container.innerHTML = '<p class="cms-empty">No FAQs in this category.</p>';
+          return;
+        }
+        var html = '<div class="faq-list">';
+        filtered.forEach(function(f, i) {
+          html += '<div class="faq-item">';
+          html += '<button class="faq-item__question" aria-expanded="false" onclick="this.classList.toggle(\'open\');this.setAttribute(\'aria-expanded\',this.classList.contains(\'open\'))">';
+          html += '<span>' + escH(f.Question) + '</span>';
+          html += '<svg class="faq-item__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+          html += '</button>';
+          html += '<div class="faq-item__answer"><p>' + escH(f.Answer) + '</p></div>';
+          html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      }
+
+      fetch(FAQ_URL)
+        .then(function(r) { return r.text(); })
+        .then(function(csv) {
+          var rows = parseCSV(csv);
+          if (rows.length < 2) { renderFAQ(); return; }
+          var headers = rows[0];
+          allData = rows.slice(1).filter(function(r) { return r[0]; }).map(function(r) {
+            var obj = {};
+            headers.forEach(function(h, i) { obj[h] = r[i] || ''; });
+            return obj;
+          });
+
+          // Build category filters
+          var cats = ['All'];
+          var seen = {};
+          allData.forEach(function(f) {
+            if (f.Category && !seen[f.Category]) { cats.push(f.Category); seen[f.Category] = true; }
+          });
+          if (cats.length > 2) {
+            filterRow.style.display = 'flex';
+            filterRow.innerHTML = cats.map(function(c) {
+              return '<button class="gallery-filter__btn' + (c === 'All' ? ' gallery-filter__btn--active' : '') + '" data-cat="' + escH(c) + '">' + escH(c) + '</button>';
+            }).join('');
+            filterRow.addEventListener('click', function(e) {
+              if (!e.target.classList.contains('gallery-filter__btn')) return;
+              currentCat = e.target.dataset.cat;
+              filterRow.querySelectorAll('.gallery-filter__btn').forEach(function(b) { b.classList.remove('gallery-filter__btn--active'); });
+              e.target.classList.add('gallery-filter__btn--active');
+              renderFAQ();
+            });
+          }
+          renderFAQ();
+        })
+        .catch(function() {
+          container.innerHTML = '<p class="cms-empty">Could not load FAQs. Please try again later.</p>';
+        });
     })();
   </script>
 </body>
