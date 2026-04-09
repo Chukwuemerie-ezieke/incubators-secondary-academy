@@ -206,52 +206,19 @@
         </div>
 
         <div class="alumni-form-card" id="alumniFormCard">
-          <form id="alumniFormEl" novalidate>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="alumni-name">Full Name <span style="color: var(--color-error);">*</span></label>
-                <input type="text" id="alumni-name" placeholder="Your full name" required>
-              </div>
-              <div class="form-group">
-                <label for="alumni-grad-year">Graduation Year <span style="color: var(--color-error);">*</span></label>
-                <input type="text" id="alumni-grad-year" placeholder="e.g. 2024" required>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="alumni-occupation">Current Occupation <span style="color: var(--color-error);">*</span></label>
-                <input type="text" id="alumni-occupation" placeholder="Your current role" required>
-              </div>
-              <div class="form-group">
-                <label for="alumni-email">Email <span style="color: var(--color-error);">*</span></label>
-                <input type="email" id="alumni-email" placeholder="you@example.com" required>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="alumni-phone">Phone</label>
-                <input type="tel" id="alumni-phone" placeholder="+234 800 000 0000">
-              </div>
-              <div class="form-group">
-                <label for="alumni-linkedin">LinkedIn URL</label>
-                <input type="url" id="alumni-linkedin" placeholder="https://linkedin.com/in/yourname">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="alumni-message">How INCUSA Shaped You</label>
-              <textarea id="alumni-message" rows="4" placeholder="Share how your time at INCUSA shaped who you are today..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg btn-icon" style="width: 100%; justify-content: center;">
-              Register as Alumni
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            </button>
-          </form>
-          <div class="form-success" id="alumniFormSuccess">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
-            <h4>Thank You!</h4>
-            <p>Your details have been received. We&rsquo;ll be in touch.</p>
-          </div>
-          <p class="alumni-form-note">Your information is kept confidential and used only for alumni network purposes.</p>
+          <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSdY2liLTZKGOVrVL-Tut1MX0n2Y1Jd0ZDG9f0061kDRLI9WeQ/viewform?embedded=true"
+            width="100%"
+            height="1100"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0"
+            style="border: none; border-radius: var(--radius-lg); background: #fff;"
+            title="INCUSA Alumni Registration Form"
+            loading="lazy">
+            Loading form&hellip;
+          </iframe>
+          <p class="alumni-form-note">Your information is kept confidential and used only for alumni network purposes. Responses are reviewed by the ICT Department before being added to the Alumni Directory.</p>
         </div>
       </div>
     </section>
