@@ -493,7 +493,13 @@
             message:   r[2] || '',
             scripture: r[3] || ''
           }))
-          .reverse(); // newest first (sheet is oldest-first)
+          .sort(function(a, b) {
+            // Sort by date descending (newest first)
+            var da = new Date(a.date), db = new Date(b.date);
+            if (isNaN(da)) return 1;
+            if (isNaN(db)) return -1;
+            return db - da;
+          });
 
         if (loading) loading.remove();
         renderPosts(posts);
