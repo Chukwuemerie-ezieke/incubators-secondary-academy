@@ -444,12 +444,16 @@
           <h4 class="word-archive__title">Previous Messages</h4>
           <div class="word-archive__grid">`;
 
-        older.forEach(post => {
+        older.forEach((post, idx) => {
+          var preview = post.message.slice(0, 160);
+          var hasMore = post.message.length > 160;
           html += `
             <article class="word-card">
               <div class="word-card__date">${escHtml(post.date)}</div>
               <h4 class="word-card__title">${escHtml(post.title)}</h4>
-              <p class="word-card__excerpt">${escHtml(post.message.slice(0, 160))}${post.message.length > 160 ? '&hellip;' : ''}</p>
+              <p class="word-card__excerpt">${escHtml(preview)}${hasMore ? '&hellip;' : ''}</p>
+              <div class="word-card__full-text" id="wordFull${idx}">${post.message.split('\n').map(p => p.trim() ? '<p>' + escHtml(p) + '</p>' : '').join('')}</div>
+              ${hasMore ? `<button class="word-card__read-more" onclick="var el=document.getElementById('wordFull${idx}');if(el.classList.contains('show')){el.classList.remove('show');this.textContent='Read Full Message \u2192';}else{el.classList.add('show');this.textContent='Show Less \u2191';}">Read Full Message \u2192</button>` : ''}
               ${post.scripture ? `<p class="word-card__scripture">${escHtml(post.scripture)}</p>` : ''}
             </article>`;
         });
