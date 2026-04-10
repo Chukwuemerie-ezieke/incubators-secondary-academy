@@ -327,7 +327,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 The Incubators Secondary Academy. All rights reserved.</p>
+        <p>&copy; 2026 The Incubators Secondary Academy. All rights reserved.<a href="privacy-policy.html" style="color: rgba(255,255,255,0.5); margin-left: 12px; font-size: 0.75rem;">Privacy Policy</a></p>
         <span class="footer-credit">Developed by INCUSA ICT Department</span>
       </div>
     </div>
@@ -364,5 +364,22 @@
       } catch(e) { console.warn('Boarding updates load error:', e); showEmpty('boardingUpdatesContainer', 'Could not load boarding updates.'); }
     })();
   </script>
+
+<!-- Cookie Consent Banner -->
+<div id="cookieConsent" class="cookie-banner" style="display:none;">
+  <div class="cookie-banner__inner">
+    <p>This website uses cookies for analytics to improve your experience. <a href="privacy-policy.html">Learn more</a></p>
+    <div class="cookie-banner__buttons">
+      <button onclick="acceptCookies()" class="cookie-btn cookie-btn--accept">Accept</button>
+      <button onclick="declineCookies()" class="cookie-btn cookie-btn--decline">Decline</button>
+    </div>
+  </div>
+</div>
+<script>
+  function acceptCookies(){localStorage.setItem('incusa_cookies','accepted');document.getElementById('cookieConsent').style.display='none';}
+  function declineCookies(){localStorage.setItem('incusa_cookies','declined');document.getElementById('cookieConsent').style.display='none';window['ga-disable-G-HYCDGKH4ZX']=true;}
+  if(!localStorage.getItem('incusa_cookies')){document.getElementById('cookieConsent').style.display='block';}
+  else if(localStorage.getItem('incusa_cookies')==='declined'){window['ga-disable-G-HYCDGKH4ZX']=true;}
+</script>
 </body>
 </html>

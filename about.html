@@ -279,7 +279,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 The Incubators Secondary Academy. All rights reserved.</p>
+        <p>&copy; 2026 The Incubators Secondary Academy. All rights reserved.<a href="privacy-policy.html" style="color: rgba(255,255,255,0.5); margin-left: 12px; font-size: 0.75rem;">Privacy Policy</a></p>
         <span class="footer-credit">Developed by INCUSA ICT Department</span>
       </div>
     </div>
@@ -299,6 +299,23 @@
         const data = await fetchSheetData(INCUSA_CMS.staff);
         const container = document.getElementById('staffContainer');
         if (!data.length) { showEmpty('staffContainer', 'Staff directory coming soon.'); return; }
+
+        // Correct placeholder names that have not yet been updated in the sheet
+        const nameCorrections = {
+          'Mr. [Principal Name]': 'Mrs. Adieme Ngozi',
+          '[Principal Name]': 'Mrs. Adieme Ngozi',
+          '[Discipleship Coordinator Name]': 'Mr. Chinedu Ugwonno',
+          'Discipleship Coordinator Name': 'Mr. Chinedu Ugwonno'
+        };
+        data.forEach(s => {
+          if (s.Name && nameCorrections[s.Name.trim()]) {
+            s.Name = nameCorrections[s.Name.trim()];
+          }
+          // Also fix placeholder photo URLs that won't resolve
+          if (s.Photo_URL && s.Photo_URL.includes('EXAMPLE_FILE_ID')) {
+            s.Photo_URL = '';
+          }
+        });
 
         // Group by department
         const deptOrder = ['Academic','Admin','Discipleship','Hostel'];
@@ -346,5 +363,22 @@
       } catch(e) { console.warn('Staff load error:', e); showEmpty('staffContainer', 'Could not load staff directory.'); }
     })();
   </script>
+
+<!-- Cookie Consent Banner -->
+<div id="cookieConsent" class="cookie-banner" style="display:none;">
+  <div class="cookie-banner__inner">
+    <p>This website uses cookies for analytics to improve your experience. <a href="privacy-policy.html">Learn more</a></p>
+    <div class="cookie-banner__buttons">
+      <button onclick="acceptCookies()" class="cookie-btn cookie-btn--accept">Accept</button>
+      <button onclick="declineCookies()" class="cookie-btn cookie-btn--decline">Decline</button>
+    </div>
+  </div>
+</div>
+<script>
+  function acceptCookies(){localStorage.setItem('incusa_cookies','accepted');document.getElementById('cookieConsent').style.display='none';}
+  function declineCookies(){localStorage.setItem('incusa_cookies','declined');document.getElementById('cookieConsent').style.display='none';window['ga-disable-G-HYCDGKH4ZX']=true;}
+  if(!localStorage.getItem('incusa_cookies')){document.getElementById('cookieConsent').style.display='block';}
+  else if(localStorage.getItem('incusa_cookies')==='declined'){window['ga-disable-G-HYCDGKH4ZX']=true;}
+</script>
 </body>
 </html>
