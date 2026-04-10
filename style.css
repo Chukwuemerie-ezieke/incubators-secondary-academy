@@ -3702,3 +3702,11 @@ form select:focus,
   /* Add bottom padding to body so content isn't hidden behind the bar */
   body { padding-bottom: 52px; }
 }
+
+/* Back-to-top button above mobile floating CTA bar */
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 68px;
+    right: var(--space-4);
+  }
+}
