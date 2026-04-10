@@ -3624,3 +3624,81 @@ form select:focus,
   font-size: 0.85rem;
   padding: var(--space-4);
 }
+
+/* ============================================================
+   FLOATING CTAs (Desktop: right sidebar, Mobile: bottom bar)
+   ============================================================ */
+.floating-ctas {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.floating-cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 8px 0 0 8px;
+  transform: translateX(calc(100% - 42px));
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  white-space: nowrap;
+}
+
+.floating-cta:hover {
+  transform: translateX(0);
+  box-shadow: -4px 2px 16px rgba(0,0,0,0.2);
+}
+
+.floating-cta svg {
+  flex-shrink: 0;
+}
+
+.floating-cta--apply {
+  background: var(--color-accent, #C8963E);
+}
+.floating-cta--contact {
+  background: var(--color-secondary, #2C5AA0);
+}
+.floating-cta--enquire {
+  background: var(--color-primary, #1B2A4A);
+}
+
+/* Mobile: convert to bottom bar */
+@media (max-width: 768px) {
+  .floating-ctas {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: auto;
+    transform: none;
+    flex-direction: row;
+    gap: 0;
+    border-radius: 0;
+  }
+  .floating-cta {
+    flex: 1;
+    justify-content: center;
+    border-radius: 0;
+    transform: none;
+    padding: 12px 8px;
+    font-size: 0.7rem;
+  }
+  .floating-cta:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  /* Add bottom padding to body so content isn't hidden behind the bar */
+  body { padding-bottom: 52px; }
+}
