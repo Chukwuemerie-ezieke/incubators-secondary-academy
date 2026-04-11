@@ -3710,3 +3710,231 @@ form select:focus,
     right: var(--space-4);
   }
 }
+
+
+/* ============================================================
+   HOUSES GRID (Boarding Page)
+   ============================================================ */
+.houses-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+.house-card {
+  background: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--house-color, var(--color-accent));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.house-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.house-card__band {
+  height: 6px;
+  background: var(--house-color, var(--color-accent));
+  opacity: 0.3;
+}
+
+.house-card__content {
+  padding: var(--space-6);
+}
+
+.house-card__name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--house-color, var(--color-text));
+  margin-bottom: var(--space-1);
+}
+
+.house-card__color {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--house-color, var(--color-muted));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-3);
+}
+
+.house-card__content > p:last-child {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .houses-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .houses-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================================
+   WELFARE GRID (Boarding Page — Health & Welfare)
+   ============================================================ */
+.welfare-grid {
+  max-width: 800px;
+  margin-inline: auto;
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.welfare-item {
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-start;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+}
+
+.welfare-item > svg {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  margin-top: var(--space-1);
+}
+
+.welfare-item h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  margin-bottom: var(--space-2);
+}
+
+.welfare-item p {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   COMMUNICATION POLICY (Boarding Page)
+   ============================================================ */
+.comm-policy {
+  max-width: 700px;
+  margin-inline: auto;
+  margin-top: var(--space-8);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-8);
+}
+
+.comm-policy__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.comm-policy__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.comm-policy__list li svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+
+/* ============================================================
+   CLUBS & SPORTS GRID (Boarding Page — Life Beyond the Classroom)
+   ============================================================ */
+.clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  max-width: 800px;
+  margin-inline: auto;
+  margin-top: var(--space-8);
+}
+
+.clubs-card {
+  background: var(--color-surface-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-6);
+}
+
+.clubs-card__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  color: var(--color-accent);
+}
+
+.clubs-card__title svg {
+  flex-shrink: 0;
+}
+
+.clubs-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.clubs-list li {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  padding-left: var(--space-4);
+  position: relative;
+  line-height: 1.6;
+}
+
+.clubs-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+  .clubs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================================
+   VALUE ITEMS — Description text (About Page core values update)
+   ============================================================ */
+.value-item p {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin-top: var(--space-2);
+}
+
+.value-item__icon svg {
+  color: var(--color-accent);
+}
