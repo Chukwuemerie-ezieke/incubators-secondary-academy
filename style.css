@@ -3938,3 +3938,264 @@ form select:focus,
 .value-item__icon svg {
   color: var(--color-accent);
 }
+
+
+/* ============================================================
+   SCHOOL UNIFORM TABLE
+   ============================================================ */
+.uniform-section {
+  background: var(--color-surface-2, var(--color-surface));
+}
+
+.uniform-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--color-border, rgba(0,0,0,0.08));
+  background: var(--color-surface);
+}
+
+.uniform-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  min-width: 600px;
+}
+
+.uniform-table thead {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.uniform-table th {
+  padding: var(--space-4) var(--space-5);
+  text-align: left;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.uniform-table td {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border, rgba(0,0,0,0.06));
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.uniform-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.uniform-table tbody tr:hover {
+  background: var(--color-surface-2, rgba(0,0,0,0.02));
+}
+
+.uniform-table .uniform-type {
+  font-weight: 600;
+  color: var(--color-heading, var(--color-text));
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .uniform-table {
+    font-size: var(--text-xs);
+  }
+  .uniform-table th,
+  .uniform-table td {
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+
+/* ============================================================
+   SCHOOL FACILITIES GRID
+   ============================================================ */
+.facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-6);
+}
+
+.facility-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border, rgba(0,0,0,0.08));
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--space-6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.facility-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.facility-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.facility-card__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.facility-card h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-heading, var(--color-text));
+  margin-bottom: var(--space-2);
+}
+
+.facility-card p {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .facilities-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================================
+   DEVOTION & ASSEMBLY SCHEDULE
+   ============================================================ */
+.devotion-section {
+  background: var(--color-surface-2, var(--color-surface));
+}
+
+.devotion-schedule {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.devotion-schedule__assembly {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border, rgba(0,0,0,0.08));
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  margin-bottom: var(--space-8);
+}
+
+.devotion-schedule__assembly-title {
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.devotion-day {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border, rgba(0,0,0,0.06));
+  gap: var(--space-4);
+}
+
+.devotion-day:last-child {
+  border-bottom: none;
+}
+
+.devotion-day__label {
+  font-weight: 600;
+  min-width: 110px;
+  color: var(--color-heading, var(--color-text));
+  font-size: var(--text-sm);
+}
+
+.devotion-day__activity {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.devotion-times {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.devotion-time-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border, rgba(0,0,0,0.08));
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.devotion-time-card__time {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+.devotion-time-card__desc {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   STUDENT LEADERSHIP
+   ============================================================ */
+.student-leadership {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.student-leadership__content {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border, rgba(0,0,0,0.08));
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--space-8);
+  position: relative;
+}
+
+.student-leadership__content::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  background: var(--color-accent, var(--color-secondary));
+}
+
+.student-leadership__content p {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+  .student-leadership__content {
+    padding: var(--space-5);
+  }
+  .devotion-day {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  .devotion-times {
+    grid-template-columns: 1fr;
+  }
+}
