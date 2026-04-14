@@ -418,15 +418,15 @@
       var form = document.getElementById('contactFormEl');
       if (!form) return;
 
-      // Remove the dummy handler from app.js by cloning the form
-      var newForm = form.cloneNode(true);
-      form.parentNode.replaceChild(newForm, form);
+      // Submit contact form to Google Forms
+      
+      
 
       var GFORM = 'https://docs.google.com/forms/d/e/1FAIpQLScMk-l3cEUDJZI6dE25-25Wbdsk4Kj3Cq2c9WjImLyDiOAC2A/formResponse';
 
-      newForm.addEventListener('submit', function(e) {
+      form.addEventListener('submit', function(e) {
         e.preventDefault();
-        var required = newForm.querySelectorAll('[required]');
+        var required = form.querySelectorAll('[required]');
         var valid = true;
         required.forEach(function(field) {
           if (!field.value.trim()) {
@@ -438,11 +438,11 @@
         });
         if (!valid) return;
 
-        var btn = newForm.querySelector('button[type="submit"]');
+        var btn = form.querySelector('button[type="submit"]');
         btn.disabled = true;
         btn.textContent = 'Sending...';
 
-        var formData = new FormData(newForm);
+        var formData = new FormData(form);
         var hiddenForm = document.createElement('form');
         hiddenForm.method = 'POST';
         hiddenForm.action = GFORM;
@@ -461,7 +461,7 @@
         hiddenForm.submit();
 
         setTimeout(function() {
-          newForm.style.display = 'none';
+          form.style.display = 'none';
           document.getElementById('formSuccess').classList.add('show');
           document.body.removeChild(hiddenForm);
         }, 1000);
@@ -573,7 +573,7 @@
     <h3 class="search-overlay__title">Search INCUSA</h3>
     <div class="search-overlay__field">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" id="searchInput" placeholder="Search pages, announcements, FAQs..." autocomplete="off">
+      <input type="text" id="searchInput" placeholder="Search pages, announcements, FAQs..." autocomplete="off" aria-label="Search INCUSA website">
     </div>
     <div id="searchResults" class="search-results"></div>
   </div>
