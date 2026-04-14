@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.incubatorsecondaryacademy.sch.ng/sitemap.xml
+
+# Incubators Secondary Academy
+# www.incubatorsecondaryacademy.sch.ng
