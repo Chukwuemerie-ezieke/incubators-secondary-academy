@@ -3650,7 +3650,7 @@ form select:focus,
   font-weight: 700;
   letter-spacing: 0.03em;
   border-radius: 8px 0 0 8px;
-  transform: translateX(calc(100% - 42px));
+  transform: translateX(calc(100% - 52px));
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   white-space: nowrap;
 }

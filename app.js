@@ -10,7 +10,8 @@
   // ============================================================
   const themeToggle = document.querySelector('[data-theme-toggle]');
   const root = document.documentElement;
-  let currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  var savedTheme = localStorage.getItem('incusa_theme');
+  let currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   root.setAttribute('data-theme', currentTheme);
   updateThemeIcon();
 
@@ -18,6 +19,7 @@
     themeToggle.addEventListener('click', function () {
       currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', currentTheme);
+      localStorage.setItem('incusa_theme', currentTheme);
       themeToggle.setAttribute('aria-label', 'Switch to ' + (currentTheme === 'dark' ? 'light' : 'dark') + ' mode');
       updateThemeIcon();
     });
@@ -158,37 +160,8 @@
   setActiveLinks(navLinks);
   setActiveLinks(mobileLinks);
 
-  // ============================================================
-  // CONTACT FORM (Decorative)
-  // ============================================================
-  const contactForm = document.getElementById('contactFormEl');
-  const formSuccess = document.getElementById('formSuccess');
-
-  if (contactForm) {
-    contactForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      // Simple validation
-      const name = document.getElementById('contact-name').value.trim();
-      const email = document.getElementById('contact-email').value.trim();
-      const message = document.getElementById('contact-message').value.trim();
-
-      if (!name || !email || !message) {
-        return;
-      }
-
-      // Show success message
-      contactForm.style.display = 'none';
-      formSuccess.classList.add('show');
-
-      // Reset after 5 seconds
-      setTimeout(function () {
-        contactForm.style.display = '';
-        formSuccess.classList.remove('show');
-        contactForm.reset();
-      }, 5000);
-    });
-  }
+  // Contact form submission is handled by each page's inline script
+  // (submits to Google Forms via hidden iframe)
 
   // ============================================================
   // SMOOTH SCROLL FOR HASH LINKS
